@@ -47,19 +47,10 @@ main > .container {
 .header {
   width: 100%;
 }
-.myform {
-  margin-top: 10px;
-  padding-top: 10px;
-}
 .account {
   padding-left: 3px;
   font-size: 1.2rem;
   padding-bottom: 0px;
-}
-.label-askme {
-  /* font-size: 1.5rem; */
-  padding-left: 20px;
-  padding-top: 20px;
 }
 .search-bar {
   padding-left:0px;
@@ -112,4 +103,31 @@ border-radius: 10rem;
 	color: green;
 	font-size: 18px;
 	line-height: normal;
+}
+
+/* base.html */
+.head-size {
+  font-size: 30px;
+	font-family: monospace;
+	line-height: 98%;
+	font-style: italic;
+}
+.color-head {
+  color:rgb(4, 248, 78);
+	height: 80px;
+}
+.label-askme {
+  font-size: 1.5rem;
+  padding-left: 20px;
+  padding-top: 15px;
+}
+.myform {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+.btn-primary {
+  width:150px;
+}
+.active-people {
+  margin-top: 30px;
 }
