@@ -10,12 +10,13 @@ main > .container {
     padding: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
+    margin-right:10px;
 }
 .tags {
   font-weight: bold;
 }
 .question img {
-  width: 120px;px;
+  width: 120px;
 }
 .user-info {
   color:white;
@@ -104,6 +105,10 @@ border-radius: 10rem;
 	font-size: 18px;
 	line-height: normal;
 }
+.form-like {
+  margin-top:20px;
+  width:120%;
+}
 
 /* base.html */
 .head-size {
@@ -130,4 +135,88 @@ border-radius: 10rem;
 }
 .active-people {
   margin-top: 30px;
+}
+.bg-dark {
+  border-bottom-color: #23f423;
+  border-bottom-style: groove;
+  border-bottom-width: 6px;
+}
+.right-border {
+  border-right-color: #23f423;;
+  border-right-style: groove;
+  border-right-width: 6px;
+  padding-right: 0px;
+}
+.bottom-border {
+  border-bottom-color: #23f423;;
+  border-bottom-style: groove;
+  border-bottom-width: 6px;
+}
+.top-border {
+  border-top-color: #23f423;;
+  border-top-style: groove;
+  border-top-width: 6px;
+}
+.head-body {
+padding-top: 10px;
+padding-left: 30%;
+margin-left: -22%;
+margin-top: -12px;
+margin-bottom: 30px;
+color: rgb(0.10,0.10,1.00);
+background: rgb(131,58,180);
+background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%); 
+
+}
+.my-font {
+  font-family: "Arial Black", Gadget, sans-serif;
+font-size: 40px;
+letter-spacing: 0px;
+word-spacing: 2px;
+color: #000000;
+font-weight: 700;
+text-decoration: rgb(68, 68, 68);
+font-style: normal;
+font-variant: small-caps;
+text-transform: none;
+}
+.inline {
+  display:inline;
+}
+/* question.html */
+.main-question img {
+  width:120px;
+}
+.main-question {
+  margin-bottom:30px;
+}
+.tags {
+  margin-top:20px;
+}
+.form-check {
+  display: block;
+  margin-top:20px;
+}
+.correct-check {
+  width: 25px;
+  height: 25px;
+}
+.correct-style {
+  font-size: large;
+  margin-top: 4px;
+  margin-left: 4px;
+}
+textarea.form-control {
+  height:auto;
+}
+.form-ans {
+  margin-top:20px;
+  margin-right: 0px;
+  margin-left: -25px;
+}
+.btn-answer {
+  margin-top:20px;
+}
+.form-control {
+  margin-top:20px;
 }
