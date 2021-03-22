@@ -151,6 +151,7 @@ border-radius: 10rem;
   border-bottom-color: #23f423;;
   border-bottom-style: groove;
   border-bottom-width: 6px;
+  width:102%;
 }
 .top-border {
   border-top-color: #23f423;;
@@ -162,6 +163,7 @@ padding-top: 10px;
 padding-left: 30%;
 margin-left: -22%;
 margin-top: -12px;
+margin-right: -5px;
 margin-bottom: 30px;
 color: rgb(0.10,0.10,1.00);
 background: rgb(131,58,180);
@@ -219,4 +221,9 @@ textarea.form-control {
 }
 .form-control {
   margin-top:20px;
+}
+
+/* question.html */
+.new-question {
+  padding-right:20px;
 }
