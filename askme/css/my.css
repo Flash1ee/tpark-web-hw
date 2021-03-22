@@ -130,6 +130,10 @@ border-radius: 10rem;
   margin-top: 10px;
   padding-top: 10px;
 }
+.btn-ask {
+  height: 80%;
+  margin-top: 20px;
+}
 .btn-primary {
   width:150px;
 }
@@ -188,6 +192,9 @@ text-transform: none;
 /* question.html */
 .main-question img {
   width:120px;
+}
+.btn-answer {
+  padding-left:0px;
 }
 .main-question {
   margin-bottom:30px;
