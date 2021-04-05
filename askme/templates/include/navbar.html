@@ -1,0 +1,33 @@
+{% load static %}
+{% block header %}
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <div class="row header">
+                    <div class='col-1 label-askme'>
+                        <i><span class="color-head head-size">AskMe</span>Me</i></a>
+                        <!-- <a class="navbar-brand" href="#">AskMe</a> -->
+                    </div>
+                    <div class='col-8 search-bar'>
+                        <form class="d-flex">
+                            <input class="form-control me-2 myform" type="search" placeholder="Введите вопрос"
+                                   aria-label="Search"/>
+                            <button class="btn btn-primary btn-ask myform" type="submit">
+                                Спросить
+                            </button>
+                        </form>
+                    </div>
+                    {% if key == "authorized" %}
+                        {% include "include/navbar_user.html" %}
+
+                    {% else %}
+                        {% include "include/navbar_unauthorized.html" %}
+
+                    {% endif %}
+                </div>
+            </div>
+
+        </nav>
+    </header>
+{% endblock header %}
