@@ -1,0 +1,25 @@
+{% load static %}
+<div class="row question">
+    <div class='col-2'>
+        <img src="{% static "img/200.png" %}"/>
+        <form class="form-like">
+            <button class="btn btn-light btn-like"> +</button>
+            <span class="like">+200</span>
+            <button class="btn btn-light btn-like"> -</button>
+        </form>
+    </div>
+    <div class="col-10">
+        <a href="#">
+            <h2>{{ answer.title }}</h2>
+        </a>
+        <div>
+            {{ answer.text }}
+        </div>
+        <div class="form-check">
+            <input class="form-check-input correct-check" type="checkbox" value="11" id="CheckCorrect">
+            <label class="form-check-label correct-style" for="CheckCorrect">
+                Выбрать
+            </label>
+        </div>
+    </div>
+</div>

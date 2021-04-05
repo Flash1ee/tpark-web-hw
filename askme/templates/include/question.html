@@ -1,0 +1,34 @@
+{% load static %}
+<div class="row question">
+    <div class="col-3">
+        <img src="{% static "img/200.png" %}"/>
+        <form class="form-like">
+            <button class="btn btn-light btn-like"> +</button>
+            <span class="like">+200</span>
+            <button class="btn btn-light btn-like"> -</button>
+        </form>
+    </div>
+    <div class="col-9">
+        <a href="{% url "one_question" question_id=question.id %}" class="question-title">
+            <h2>{{ question.title }}</h2>
+        </a>
+        <div class="question-text">
+            {{ question.text }}
+        </div>
+        {% if tags %}
+            <div class='tags'>
+                <b>Теги:</b>
+                {% for tag in tags %}
+                    {% include "include/question_tags.html" %}
+                {% endfor %}
+            </div>
+            {% if question.count_answers %}
+                <span class="answers">
+                    <a class='nav-link btn-answer inline' href='#'>
+                        <b><i>Ответов({{ question.count_answers }})</i></b></a>
+                </span>
+            {% endif %}
+        {% endif %}
+
+    </div>
+</div>
