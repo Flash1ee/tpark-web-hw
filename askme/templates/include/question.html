@@ -1,5 +1,5 @@
 {% load static %}
-<div class="row question">
+<div class="row question {% if one_question %} bottom-border answer-shift{% endif %}">
     <div class="col-3">
         <img src="{% static "img/200.png" %}"/>
         <form class="form-like">

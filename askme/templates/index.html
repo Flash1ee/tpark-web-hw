@@ -9,35 +9,22 @@
             <p class="h4">{{ category }}</p>
         </div>
         <div class="col-4">
-            <a href="#">{{ forward_category }}</a>
+            {% if redirect_new %}
+                <a href="{% url "new" %}">
+            {% else %}
+                <a href="{% url "hot" %}">
+            {% endif %}
+            {{ forward_category }}
+            </a>
         </div>
     </div>
 {% endblock %}
 {% block content %}
-    {% for question in questions %}
+    {% for question in page_object.object_list %}
         {% include "include/question.html" %}
     {% endfor %}
-    <nav aria-label="Questions pagination">
-        <ul class="pagination">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Назад</span>
-                </a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">2 <span class="sr-only"></span></a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Вперёд</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    {% include "include/pagination.html" %}
+
 {% endblock content %}
 {% block side %}
     {% include "include/sidebar.html" %}

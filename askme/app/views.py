@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import paginator
 
 questions = []
 for i in range(0, 11):
@@ -31,22 +32,43 @@ for i in range(len(popular_users)):
 
 
 # Create your views here.
-def ask_page(request):
-    return render(request, 'ask.html', {"tags": tags, 'users': users, "key": "authorized"})
 
 
 def base_page(request):
-    return render(request, 'index.html',
-                  {"category": "Новые вопросы", "forward_category": "Лучшие вопросы", "questions": questions,
-                   "tags": tags, 'users': users,
-                   "key": "authorized"})
+    content = paginator.paginate(questions, request, 1)
+    content.update({"category": "Новые вопросы", "forward_category": "Лучшие вопросы",
+                    "tags": tags, 'users': users,
+                    "key": "authorized", "popular_tags":popular_tags})
+    return render(request, 'index.html', content)
 
 
 def hot_page(request):
-    return render(request, 'index.html',
-                  {"category": "Лучшие вопросы", "forward_category": "Новые вопросы", "questions": questions,
-                   "tags": tags, "users": users,
-                   "popular_tags": popular_tags})
+    content = paginator.paginate(questions, request, 3)
+    content.update({"category": "Лучшие вопросы", "forward_category": "Новые вопросы", "questions": questions,
+                    "tags": tags, "users": users,
+                    "popular_tags": popular_tags, "redirect_new": "new"})
+    return render(request, 'index.html', content)
+
+
+def question_page(request, question_id):
+    question = questions[question_id]
+    content = paginator.paginate(answers, request, 3)
+    content.update({"question": question,"popular_tags":popular_tags, "answers": answers, "tags": tags, "users": users, "one_question": ""})
+    return render(request, 'question.html', content)
+
+
+def tag_page(request, tag):
+    tag = {"tag": tag}
+    content = paginator.paginate(answers, request, 3)
+    content.update(
+        {"questions": questions, "answers": answers, "tags": tags, "users": users, "popular_tags": popular_tags,
+         "one_tag": tag})
+
+    return render(request, 'tag.html', content)
+
+
+def settings(request):
+    return render(request, 'settings.html', {"key": "authorized"})
 
 
 def login_page(request):
@@ -57,11 +79,5 @@ def signup_page(request):
     return render(request, 'signup.html', {"tags": tags, "users": users})
 
 
-def question_page(request, question_id):
-    question = questions[question_id]
-    return render(request, 'question.html', {"question": question, "answers": answers, "tags": tags})
-
-
-def tag_page(request, tag):
-    tag = {"tag": tag}
-    return render(request, 'tag.html', {"questions": questions, "answers": answers, "tags": tag})
+def ask_page(request):
+    return render(request, 'ask.html', {"tags": tags, 'users': users, "key": "authorized"})

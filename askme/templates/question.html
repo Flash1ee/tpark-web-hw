@@ -4,9 +4,11 @@
 {% endblock page-title %}
 {% block content %}
     {% include "include/question.html" %}
-    {% for answer in answers %}
+    {% for answer in page_object.object_list %}
         {% include "include/answer.html" %}
     {% endfor %}
+    {% include "include/pagination.html" %}
+
     <div class='row form-ans top-border'>
         <form id="new-answer" class="enter-answer">
             <div class="mb-3">

@@ -230,7 +230,8 @@ main > .container {
 }
 
 .btn-answer {
-    padding-left: 0px;
+    padding:5px;
+
 }
 
 .main-question {
@@ -308,4 +309,19 @@ textarea.form-control {
 .new-acc {
     padding-bottom: 20px;
     padding-left: 0px;
+}
+
+.profile-settings {
+    width: 60px;
+    margin-left: 0px;
+    border-radius: 10px;
+}
+.settings-view {
+    margin-top:5px;
+}
+.settings-view-row {
+    margin-top:20px;
+}
+.answer-shift {
+    margin-bottom:50px;
 }

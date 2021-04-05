@@ -9,7 +9,7 @@
         </form>
     </div>
     <div class="col-10">
-        <a href="#">
+        <a href="{% url "one_question" question_id=answer.id %}">
             <h2>{{ answer.title }}</h2>
         </a>
         <div>

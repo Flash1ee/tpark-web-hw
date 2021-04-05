@@ -16,7 +16,7 @@
             <input type="password" class="form-control" id="InputPassword1" placeholder="Ваш пароль"
                    required>
         </div>
-        <span><a class='nav-link new-acc' href='#'>Создать аккаунт</a></span>
+        <span><a class='nav-link new-acc' href="{% url "signup" %}">Создать аккаунт</a></span>
         <button type="submit" class="btn btn-primary">Войти</button>
     </form>
 {% endblock content %}
