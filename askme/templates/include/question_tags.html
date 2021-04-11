@@ -1,2 +1,2 @@
 {% load static %}
-<a class='nav-link inline' href="#">{{ tag.tag }}</a>
+<a class='nav-link inline' href="{% url "tag" tag=tag.tag %}">{{ tag.tag }}</a>

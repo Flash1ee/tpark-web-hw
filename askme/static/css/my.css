@@ -138,6 +138,9 @@ main > .container {
     line-height: 98%;
     font-style: italic;
 }
+.off-border {
+    text-decoration: None;
+}
 
 .color-head {
     color: rgb(4, 248, 78);
@@ -230,7 +233,7 @@ main > .container {
 }
 
 .btn-answer {
-    padding:5px;
+    padding: 5px;
 
 }
 
@@ -316,12 +319,15 @@ textarea.form-control {
     margin-left: 0px;
     border-radius: 10px;
 }
+
 .settings-view {
-    margin-top:5px;
+    margin-top: 5px;
 }
+
 .settings-view-row {
-    margin-top:20px;
+    margin-top: 20px;
 }
+
 .answer-shift {
-    margin-bottom:50px;
+    margin-bottom: 50px;
 }

@@ -35,7 +35,7 @@ for i in range(len(popular_users)):
 
 
 def base_page(request):
-    content = paginator.paginate(questions, request, 1)
+    content = paginator.paginate(questions, request, 10)
     content.update({"category": "Новые вопросы", "forward_category": "Лучшие вопросы",
                     "tags": tags, 'users': users,
                     "key": "authorized", "popular_tags":popular_tags})
@@ -68,16 +68,16 @@ def tag_page(request, tag):
 
 
 def settings(request):
-    return render(request, 'settings.html', {"key": "authorized"})
+    return render(request, 'settings.html', {"key": "authorized", "users": users, "popular_tags": popular_tags})
 
 
 def login_page(request):
-    return render(request, 'login.html', {"tags": tags, "users": users})
+    return render(request, 'login.html', {"tags": tags, "users": users, "popular_tags": popular_tags})
 
 
 def signup_page(request):
-    return render(request, 'signup.html', {"tags": tags, "users": users})
+    return render(request, 'signup.html', {"tags": tags, "users": users, "popular_tags": popular_tags})
 
 
 def ask_page(request):
-    return render(request, 'ask.html', {"tags": tags, 'users': users, "key": "authorized"})
+    return render(request, 'ask.html', {"tags": tags, 'users': users, "key": "authorized", "popular_tags": popular_tags})
