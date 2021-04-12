@@ -7,13 +7,14 @@
                 <div class="row header">
                     <div class='col-1 label-askme'>
                         {#                        <i><span class="color-head head-size">AskMe</span>Me</i></a>#}
-                        <i><a class="color-head off-border head-size" href="{% url "new" %}">AskMe</a></i></a>
+                        <i><a class="align-baseline color-head off-border head-size"
+                              href="{% url "new" %}">AskMe</a></i></a>
                     </div>
                     <div class='col-8 search-bar'>
                         <form class="d-flex">
-                            <input class="form-control me-2 myform" type="search" placeholder="Введите вопрос"
+                            <input class="myform form-control me-2" type="search" placeholder="Введите вопрос"
                                    aria-label="Search"/>
-                            <button formaction="{% url "ask" %}" class="btn btn-primary btn-ask myform" type="submit">
+                            <button formaction="{% url "ask" %}" class="myform btn btn-primary btn-ask" type="submit">
                                 Спросить
                             </button>
                         </form>

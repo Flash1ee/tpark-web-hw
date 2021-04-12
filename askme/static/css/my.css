@@ -2,6 +2,7 @@ main > .container {
     padding: 80px 15px 0;
     margin-top: 15px;
     padding-left: 40px;
+    margin-bottom:20px;
 }
 
 .question {
@@ -30,23 +31,29 @@ main > .container {
 }
 
 .profile-img {
-    width: 60px;
+    width: 55px;
     margin-left: 25px;
     border-radius: 10px;
 }
 
+.navbar-img {
+    padding-top: 10px;
+}
+
 .account {
     color: white;
+    padding-top: 5px;
 }
 
 .name-account {
-    padding-left: 8px;
+    padding-left: 0px;
+    padding-top: 0px
 }
 
 .account-set {
     margin-bottom: 0px;
+    margin-top: 0px;
     padding-bottom: 0px;
-    margin-top: 2px;
     padding-top: 2px;
 }
 
@@ -138,6 +145,7 @@ main > .container {
     line-height: 98%;
     font-style: italic;
 }
+
 .off-border {
     text-decoration: None;
 }
@@ -150,17 +158,19 @@ main > .container {
 .label-askme {
     font-size: 1.5rem;
     padding-left: 20px;
-    padding-top: 15px;
+    height: 50px;
+    padding-top: 18px;
 }
 
 .myform {
-    margin-top: 10px;
     padding-top: 10px;
+    margin-top: 10px;
+    height: 50px;
 }
 
 .btn-ask {
-    height: 80%;
-    margin-top: 20px;
+    /*height: 80%;*/
+    /*margin-top: 20px;*/
 }
 
 .btn-primary {
@@ -223,6 +233,8 @@ main > .container {
     text-transform: none;
 }
 
+}
+
 .inline {
     display: inline;
 }
@@ -277,7 +289,7 @@ textarea.form-control {
 }
 
 .form-control {
-    margin-top: 20px;
+    /*margin-top: 20px;*/
 }
 
 /* question.html */
@@ -300,8 +312,10 @@ textarea.form-control {
 }
 
 .login-in {
-    padding-top: 25px;
+    /*padding-top: 25px;*/
     color: #23f423;
+    height: 50px;
+    padding-top: 15px;
 }
 
 .login-in:active {
@@ -330,4 +344,10 @@ textarea.form-control {
 
 .answer-shift {
     margin-bottom: 50px;
+}
+
+/*base.html*/
+.site-label {
+    height: 50px;
+    padding-top: 18px;
 }
