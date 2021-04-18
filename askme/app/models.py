@@ -1,12 +1,11 @@
 import django.contrib.auth.models
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.db.models import Count
 
 # Create your models here.
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    birth_date = models.DateField()
     avatar = models.ImageField(default=None)
 
     def __str__(self):
@@ -20,7 +19,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-    class Tag:
+    class Meta:
         verbose_name = "Тег"
         verbose_name_plural = 'Теги'
 
@@ -33,14 +32,24 @@ class Like(models.Model):
         verbose_name = 'Лайк'
         verbose_name_plural = 'Лайки'
 
+class QuestionManager(models.Manager):
+    def count_answers(self):
+        return self.annotate(answers=Count('title'))
+    def questions_by_rating(self):
+        return self.count_answers().order_by('-likes', 'answers')
+    def question_by_date(self):
+        return self.count_answers().order_by('pub_date', 'answers')
+
 class Question(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
-    pub_date = models.DateTimeField(auto_now=True)
+    pub_date = models.DateTimeField(auto_now_add=True)
     likes = models.OneToOneField(Like, on_delete=models.CASCADE)
 
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
+
+    objects = QuestionManager()
 
     def __str__(self):
         return self.title
@@ -53,7 +62,7 @@ class Question(models.Model):
 class Answer(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
-    pub_date = models.DateTimeField(auto_now=True)
+    pub_date = models.DateTimeField(auto_now_add=True)
     likes = models.OneToOneField(Like, on_delete=models.CASCADE)
 
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
