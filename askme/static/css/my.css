@@ -234,7 +234,10 @@ main > .container {
 }
 
 }
+.nav-link {
+    display: inline;
 
+}
 .inline {
     display: inline;
 }

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'app.management.commands'
 ]
 MEDIA_ROOT = "media/"
 MIDDLEWARE = [

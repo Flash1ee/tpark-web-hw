@@ -13,7 +13,7 @@
             <h2>{{ question.title }}</h2>
         </a>
         <div class="question-text">
-            {{ question.text }}
+            {{ question.text | truncatechars:200 }}
         </div>
         {% if tags %}
             <div class='tags'>

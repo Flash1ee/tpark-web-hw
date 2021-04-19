@@ -1,13 +1,17 @@
 import django.contrib.auth.models
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.utils import timezone
 
 
+class TagManager(models.Manager):
+    def top_tags(self, count=5):
+        return self.annotate(count=Count('question')).order_by('-question')[:count]
+
 class QuestionManager(models.Manager):
     def count_answers(self):
-        return self.annotate(answers=Count('title'))
+        return self.annotate(answers=Count('answer'))
 
     def questions_by_rating(self):
         return self.count_answers().order_by('-likes', 'answers')
@@ -17,8 +21,15 @@ class QuestionManager(models.Manager):
 
     def question_by_max_date(self):
         return self.count_answers().order_by('pub_date', '-answers')
-    def get_min_id(self):
-        return self.annotate()
+
+    def by_tag(self, tag):
+        return self.count_answers().filter(tags__name=tag)
+
+    def new(self):
+        return self.count_answers().order_by('-pub_date')
+
+    def hot(self):
+        return self.count_answers().annotate(likes=Sum('question_like')).order_by('-likes')
 
 
 # Create your models here.
@@ -36,6 +47,7 @@ class Profile(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=32)
+    objects = TagManager()
 
     def __str__(self):
         return self.name
@@ -82,13 +94,13 @@ class Answer(models.Model):
 
 class LikeQuestion(models.Model):
     LIKE = '1'
-    DISLIKE = '0'
+    DISLIKE = '-1'
 
     MARK = [
         (LIKE, 'Like'),
         (DISLIKE, "Dislike"),
     ]
-    mark = models.CharField(choices=MARK, max_length=1)
+    mark = models.CharField(choices=MARK, max_length=2)
     question = models.ForeignKey(Question, related_name="question_like", on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     pub_date = models.DateTimeField(default=timezone.now)
@@ -97,17 +109,17 @@ class LikeQuestion(models.Model):
         db_table = 'app_like_question'
         verbose_name = 'Лайк_вопроса'
         verbose_name_plural = 'Лайки_вопросов'
-        unique_together = ('profile', 'question')
+
 
 class LikeAnswer(models.Model):
     LIKE = '1'
-    DISLIKE = '0'
+    DISLIKE = '-1'
 
     MARK = [
         (LIKE, 'Like'),
         (DISLIKE, "Dislike"),
     ]
-    mark = models.CharField(choices=MARK, max_length=1)
+    mark = models.CharField(choices=MARK, max_length=2)
     answer = models.ForeignKey(Answer, related_name="answer_like", on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     pub_date = models.DateTimeField(default=timezone.now)
@@ -116,5 +128,3 @@ class LikeAnswer(models.Model):
         db_table = 'app_like_answer'
         verbose_name = 'Лайк_ответа'
         verbose_name_plural = 'Лайки_ответов'
-        unique_together = ('profile', 'answer')
-
