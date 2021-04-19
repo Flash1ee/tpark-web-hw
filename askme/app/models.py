@@ -2,51 +2,55 @@ import django.contrib.auth.models
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Count
+from django.utils import timezone
+
+
+class QuestionManager(models.Manager):
+    def count_answers(self):
+        return self.annotate(answers=Count('title'))
+
+    def questions_by_rating(self):
+        return self.count_answers().order_by('-likes', 'answers')
+
+    def question_by_min_date(self):
+        return self.count_answers().order_by('-pub_date', '-answers')
+
+    def question_by_max_date(self):
+        return self.count_answers().order_by('pub_date', '-answers')
+    def get_min_id(self):
+        return self.annotate()
+
 
 # Create your models here.
-class Author(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(default=None)
+    avatar = models.ImageField(upload_to="", default='static/img/200.png')
 
     def __str__(self):
         return self.user.username
+
     class Meta:
         verbose_name = "Автор"
         verbose_name_plural = "Авторы"
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=32)
 
     def __str__(self):
         return self.name
+
     class Meta:
         verbose_name = "Тег"
         verbose_name_plural = 'Теги'
 
 
-
-class Like(models.Model):
-    count = models.IntegerField(8)
-
-    class Meta:
-        verbose_name = 'Лайк'
-        verbose_name_plural = 'Лайки'
-
-class QuestionManager(models.Manager):
-    def count_answers(self):
-        return self.annotate(answers=Count('title'))
-    def questions_by_rating(self):
-        return self.count_answers().order_by('-likes', 'answers')
-    def question_by_date(self):
-        return self.count_answers().order_by('pub_date', 'answers')
-
 class Question(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
-    pub_date = models.DateTimeField(auto_now_add=True)
-    likes = models.OneToOneField(Like, on_delete=models.CASCADE)
+    pub_date = models.DateTimeField(default=timezone.now)
 
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
 
     objects = QuestionManager()
@@ -57,15 +61,14 @@ class Question(models.Model):
     class Meta:
         verbose_name = "Вопрос"
         verbose_name_plural = "Вопросы"
+        ordering = ['-pub_date']
 
 
 class Answer(models.Model):
-    title = models.CharField(max_length=255)
     text = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
-    likes = models.OneToOneField(Like, on_delete=models.CASCADE)
 
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -74,4 +77,44 @@ class Answer(models.Model):
     class Meta:
         verbose_name = "Ответ"
         verbose_name_plural = "Ответы"
+        ordering = ['-pub_date']
+
+
+class LikeQuestion(models.Model):
+    LIKE = '1'
+    DISLIKE = '0'
+
+    MARK = [
+        (LIKE, 'Like'),
+        (DISLIKE, "Dislike"),
+    ]
+    mark = models.CharField(choices=MARK, max_length=1)
+    question = models.ForeignKey(Question, related_name="question_like", on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    pub_date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = 'app_like_question'
+        verbose_name = 'Лайк_вопроса'
+        verbose_name_plural = 'Лайки_вопросов'
+        unique_together = ('profile', 'question')
+
+class LikeAnswer(models.Model):
+    LIKE = '1'
+    DISLIKE = '0'
+
+    MARK = [
+        (LIKE, 'Like'),
+        (DISLIKE, "Dislike"),
+    ]
+    mark = models.CharField(choices=MARK, max_length=1)
+    answer = models.ForeignKey(Answer, related_name="answer_like", on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    pub_date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = 'app_like_answer'
+        verbose_name = 'Лайк_ответа'
+        verbose_name_plural = 'Лайки_ответов'
+        unique_together = ('profile', 'answer')
 
