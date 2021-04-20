@@ -34,15 +34,6 @@ class QuestionManager(models.Manager):
     def get_by_id(self, id):
         return self.count_likes().get(id=id)
 
-    def questions_by_rating(self):
-        return self.count_answers().order_by('-likes', 'answers')
-
-    def question_by_min_date(self):
-        return self.count_answers().order_by('-pub_date', '-answers')
-
-    def question_by_max_date(self):
-        return self.count_answers().order_by('pub_date', '-answers')
-
     def by_tag(self, tag):
         return self.count_answers().filter(tags__name=tag)
 
@@ -53,10 +44,17 @@ class QuestionManager(models.Manager):
         return self.count_likes()
 
 
+class ProfileManager(models.Manager):
+    def get_top_users(self, count=5):
+        return self.annotate(answers=Count('profile_related')).order_by('-answers')[:count]
+
+
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to="", default='static/img/200.png')
+
+    objects = ProfileManager()
 
     def __str__(self):
         return self.user.username
@@ -101,7 +99,7 @@ class Answer(models.Model):
     text = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
 
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, related_name='profile_related', on_delete=models.CASCADE)
     question = models.ForeignKey(Question, related_name='answer_related', on_delete=models.CASCADE)
 
     objects = AnswerManager()

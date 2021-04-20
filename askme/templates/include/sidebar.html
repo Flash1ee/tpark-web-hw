@@ -10,7 +10,7 @@
                 {% if forloop.counter0|is_newcol_zero %}
                     <a class='text-wrap badge yellow' href="{% url "tag" tag=tag %}">{{ tag }}</a>
                 {% elif forloop.counter0|is_newcol_one %}
-                    <a class='text-wrap badge red' href="{% url "tag" tag=tag%}">{{ tag }}</a>
+                    <a class='text-wrap badge red' href="{% url "tag" tag=tag %}">{{ tag }}</a>
                 {% elif forloop.counter0|is_newcol_two %}
                     <a class='text-wrap badge blue' href="{% url "tag" tag=tag %}">{{ tag }}</a>
                     </div>
@@ -21,12 +21,17 @@
             {% endfor %}
             <div>
                 <h1>Активные участники</h1>
-                {% for user in users %}
-                    <div class='row'>
-                        <a href="#" class=>{{ user.user }}</a>
-                    </div>
-                    </div>
+                {% for user in top_users %}
+                    <ul class="list-group">
+                        <li href='#' class="text-center mx-auto list-group-item list-group-item-action">{{ user.user }}</li>
+                    </ul>
                 {% endfor %}
+{#                {% for user in top_users %}#}
+{#                    <div class='row'>#}
+{#                        <a href="#" class="badge badge-primary">{{ user.user }}</a>#}
+{#                    </div>#}
+{#                    </div>#}
+{#                {% endfor %}#}
         </div>
     </div>
 {% endblock side %}
