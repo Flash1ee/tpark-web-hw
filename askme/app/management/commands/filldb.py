@@ -16,21 +16,15 @@ locales = OrderedDict([
     ('en-US', 1),
     ('ru-RU', 2)
 ])
-# COUNT_USERS = 1000
-# COUNT_QUESTIONS = 5000
-# COUNT_ANSWERS = 10000
-# COUNT_TAGS = 1000
-# LIKES = 5000
-
-COUNT_USERS = 100
-COUNT_QUESTIONS = 500
-COUNT_ANSWERS = 2000
-COUNT_TAGS = 100
-LIKES = 3000
+COUNT_USERS = 10001
+COUNT_QUESTIONS = 100001
+COUNT_ANSWERS = 1000001
+COUNT_TAGS = 10001
+LIKES = 2000001
 
 FILE_TAGS = BASE_DIR / 'app/tags.txt'
 print(FILE_TAGS)
-FILE_QUESTIONS = BASE_DIR / "app/questions.txt"
+FILE_QUESTIONS = BASE_DIR / "app/shuffle_q.txt"
 
 
 class Command(BaseCommand):
@@ -48,8 +42,8 @@ class Command(BaseCommand):
     #     )
 
     def handle(self, *args, **options):
-        self.users_generate(COUNT_USERS)
-        self.tags_generate(COUNT_TAGS)
+        # self.users_generate(COUNT_USERS)
+        # self.tags_generate(COUNT_TAGS)
         self.question_generate(COUNT_QUESTIONS)
         self.answers_generate(COUNT_ANSWERS)
         self.like_generate(LIKES)
@@ -59,10 +53,11 @@ class Command(BaseCommand):
         tags = f.readlines()
         f.close()
         for i in range(count):
-            Tag.objects.create(name=tags[random.randint(0, len(tags))][:-2])
+            Tag.objects.create(name=tags[random.randint(0, len(tags))][:-1])
+        print("TAG_DONE")
 
-    def user_generate(self):
-        username = self.faker.unique.user_name()
+    def user_generate(self, i=0):
+        username = self.faker.unique.user_name() + str(i % 10)
         first_name = self.faker['ru-RU'].first_name()
         last_name = self.faker['ru-RU'].last_name()
         email = self.faker.email()
@@ -73,25 +68,29 @@ class Command(BaseCommand):
 
     def users_generate(self, count):
         for i in range(count):
-            self.user_generate()
+            self.user_generate(i)
+        print("USER_DONE")
 
     def question_generate(self, count):
         f = open(FILE_QUESTIONS, 'r')
         titles = f.readlines()
         f.close()
         cnt_tags = Tag.objects.all().count()
+        tag_id = Tag.objects.order_by('id')[0].id
         min_id = Profile.objects.order_by('id')[0].id
         max_id = Profile.objects.order_by('-id')[0].id
         for i in range(count):
             cnt_tags_q = random.randint(1, 5)
             text = self.faker['ru-RU'].paragraph(random.randint(100, 200))
             profile_id = random.randint(min_id, max_id)
-            q = Question.objects.create(text=text, title=titles[random.randint(0, len(titles))][:-2],
+            q = Question.objects.create(text=text, title=titles[random.randint(0, len(titles))][:-1],
                                         profile_id=profile_id)
 
             for j in range(cnt_tags_q):
-                tag = Tag.objects.get(id=random.randint(1, cnt_tags))
+                tag = Tag.objects.get(id=random.randint(tag_id, tag_id+cnt_tags))
                 q.tags.add(tag)
+        print("QUESTION_DONE")
+
 
     def answers_generate(self, count):
         min_profile_id = Profile.objects.order_by('id')[0].id
@@ -104,6 +103,9 @@ class Command(BaseCommand):
             question = random.randint(min_question_id, max_question_id)
             ans = Answer.objects.create(text=text, question_id=question,
                                         profile_id=profile_id)
+        print("ANSWERS_DONE")
+
+
     def like_generate(self, count):
         min_profile_id = Profile.objects.order_by('id')[0].id
         max_profile_id = Profile.objects.order_by('-id')[0].id
@@ -130,12 +132,13 @@ class Command(BaseCommand):
                 profile_id = random.randint(min_profile_id, max_profile_id)
                 ans_id = random.randint(min_ans_id, max_ans_id)
                 if like > 0:
-                     like = LikeAnswer.LIKE
+                    like = LikeAnswer.LIKE
                 else:
                     like = LikeAnswer.DISLIKE
-                    check = LikeAnswer.objects.\
-                    filter(answer_id=ans_id, profile_id=profile_id).count()
+                    check = LikeAnswer.objects. \
+                        filter(answer_id=ans_id, profile_id=profile_id).count()
                 if not check:
                     LikeAnswer.objects.create(answer_id=ans_id, profile_id=profile_id, mark=like)
                     break
+        print("LIKES_DONE")
 

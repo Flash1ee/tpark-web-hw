@@ -25,20 +25,15 @@
                 {{ question.text | truncatechars:200 }}
             {% endif %}
         </div>
-        {#        {% if tags %}#}
         <div class='tags'>
             <b>Теги:</b>
             {% for tag in question.tags.all %}
                 {% include "include/question_tags.html" %}
             {% endfor %}
         </div>
-        {#            {% if question.answers %}#}
         <span class="answers">
-                    <a class='btn btn-outline-primary btn-sm mt-2' href='#'>
+                    <a class='btn btn-outline-primary btn-sm mt-2' href='{% url "one_question" question_id=question.id %}'>
                         <b><i>Ответов({{ question.answers }})</i></b></a>
                 </span>
-        {#            {% endif %}#}
-        {#        {% endif %}#}
-
     </div>
 </div>

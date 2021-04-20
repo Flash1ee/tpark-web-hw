@@ -2,37 +2,7 @@ from django.shortcuts import render
 from app.models import *
 import paginator
 
-# questions = []
-# for i in range(0, 11):
-#     questions.append({
-#         'id': i,
-#         'title': 'Title ' + str(i),
-#         'text': 'Some text for question' + str(i)
-#     })
-#
-# answers = []
-# for i in range(0, 11):
-#     answers.append({
-#         'id': i,
-#         'title': 'Title ' + str(i),
-#         'text': 'Some text for question' + str(i)
-#     })
-# popular_tags = ["MySQL", "Python3", "C++", "Golang", "JavaScript"]
-#
-# tags = []
-# for i in range(len(popular_tags)):
-#     tags.append({
-#         'tag': popular_tags[i]
-#     })
-popular_users = ["Pupkin", "Bauman", "Straustrup", "Ritchi"]
-users = []
-for i in range(len(popular_users)):
-    users.append({
-        'user': popular_users[i]
-    })
-
 users = Profile.objects.get_top_users(count=10)
-print(users[0])
 
 # Create your views here.
 def base_page(request):

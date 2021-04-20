@@ -1,4 +1,3 @@
-import django.contrib.auth.models
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum
@@ -6,7 +5,7 @@ from django.utils import timezone
 
 
 class TagManager(models.Manager):
-    def top_tags(self, count=5):
+    def top_tags(self, count=10):
         return self.annotate(count=Count('tag_related')).order_by('-count')[:count]
 
 
@@ -18,12 +17,12 @@ class AnswerManager(models.Manager):
         return res
 
     def answer_by_question(self, id):
-        return self.hot().filter(question_id=id)
+        return self.annotate(likes=Sum('answer_like__mark')).order_by('-likes').filter(question_id=id)
 
 
 class QuestionManager(models.Manager):
     def count_answers(self):
-        return self.annotate(answers=Count('answer_related'))
+        return self.annotate(answers=Count('answer_related', distinct=True))
 
     def count_likes(self):
         res = self.count_answers().annotate(likes=Sum('question_like__mark')).order_by('-likes').exclude(likes=None)
@@ -80,6 +79,7 @@ class Question(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
     pub_date = models.DateTimeField(default=timezone.now)
+    rating = models.IntegerField(verbose_name="question_rating", default=0)
 
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, related_name='tag_related')
@@ -98,7 +98,7 @@ class Question(models.Model):
 class Answer(models.Model):
     text = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
-
+    correct = models.BooleanField(default=False)
     profile = models.ForeignKey(Profile, related_name='profile_related', on_delete=models.CASCADE)
     question = models.ForeignKey(Question, related_name='answer_related', on_delete=models.CASCADE)
 
