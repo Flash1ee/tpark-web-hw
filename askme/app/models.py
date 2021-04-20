@@ -7,11 +7,32 @@ from django.utils import timezone
 
 class TagManager(models.Manager):
     def top_tags(self, count=5):
-        return self.annotate(count=Count('question')).order_by('-question')[:count]
+        return self.annotate(count=Count('tag_related')).order_by('-count')[:count]
+
+
+class AnswerManager(models.Manager):
+    def hot(self):
+        res = self.annotate(likes=Sum('answer_like__mark')).order_by('-likes').exclude(likes=None)
+        if res.count() < 3:
+            res = self.annotate(likes=Sum('answer_like__mark')).order_by('-likes')
+        return res
+
+    def answer_by_question(self, id):
+        return self.hot().filter(question_id=id)
+
 
 class QuestionManager(models.Manager):
     def count_answers(self):
-        return self.annotate(answers=Count('answer'))
+        return self.annotate(answers=Count('answer_related'))
+
+    def count_likes(self):
+        res = self.count_answers().annotate(likes=Sum('question_like__mark')).order_by('-likes').exclude(likes=None)
+        if res.count() < 3:
+            res = self.count_answers().annotate(likes=Sum('question_like__mark')).order_by('-likes')
+        return res
+
+    def get_by_id(self, id):
+        return self.count_likes().get(id=id)
 
     def questions_by_rating(self):
         return self.count_answers().order_by('-likes', 'answers')
@@ -26,10 +47,10 @@ class QuestionManager(models.Manager):
         return self.count_answers().filter(tags__name=tag)
 
     def new(self):
-        return self.count_answers().order_by('-pub_date')
+        return self.count_likes().order_by('-pub_date')
 
     def hot(self):
-        return self.count_answers().annotate(likes=Sum('question_like')).order_by('-likes')
+        return self.count_likes()
 
 
 # Create your models here.
@@ -63,7 +84,7 @@ class Question(models.Model):
     pub_date = models.DateTimeField(default=timezone.now)
 
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name='tag_related')
 
     objects = QuestionManager()
 
@@ -81,10 +102,9 @@ class Answer(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
 
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='answer_related', on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.title
+    objects = AnswerManager()
 
     class Meta:
         verbose_name = "Ответ"
@@ -100,7 +120,7 @@ class LikeQuestion(models.Model):
         (LIKE, 'Like'),
         (DISLIKE, "Dislike"),
     ]
-    mark = models.CharField(choices=MARK, max_length=2)
+    mark = models.IntegerField(choices=MARK)
     question = models.ForeignKey(Question, related_name="question_like", on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     pub_date = models.DateTimeField(default=timezone.now)
@@ -119,7 +139,7 @@ class LikeAnswer(models.Model):
         (LIKE, 'Like'),
         (DISLIKE, "Dislike"),
     ]
-    mark = models.CharField(choices=MARK, max_length=2)
+    mark = models.IntegerField(choices=MARK)
     answer = models.ForeignKey(Answer, related_name="answer_like", on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     pub_date = models.DateTimeField(default=timezone.now)

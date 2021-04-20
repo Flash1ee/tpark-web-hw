@@ -4,7 +4,13 @@
         <img src="{% static "img/200.png" %}"/>
         <form class="form-like">
             <button class="btn btn-light btn-like"> +</button>
-            <span class="like">+200</span>
+            <span class="like">
+                {% if question.likes == None %}
+                    0
+                {% else %}
+                    {{ question.likes }}
+                {% endif %}
+            </span>
             <button class="btn btn-light btn-like"> -</button>
         </form>
     </div>
@@ -13,22 +19,26 @@
             <h2>{{ question.title }}</h2>
         </a>
         <div class="question-text">
-            {{ question.text | truncatechars:200 }}
-        </div>
-        {% if tags %}
-            <div class='tags'>
-                <b>Теги:</b>
-                {% for tag in tags %}
-                    {% include "include/question_tags.html" %}
-                {% endfor %}
-            </div>
-            {% if question.count_answers %}
-                <span class="answers">
-                    <a class='nav-link btn-answer inline' href='#'>
-                        <b><i>Ответов({{ question.count_answers }})</i></b></a>
-                </span>
+            {% if answers %}
+                {{ question.text }}
+            {% else %}
+                {{ question.text | truncatechars:200 }}
             {% endif %}
-        {% endif %}
+        </div>
+        {#        {% if tags %}#}
+        <div class='tags'>
+            <b>Теги:</b>
+            {% for tag in question.tags.all %}
+                {% include "include/question_tags.html" %}
+            {% endfor %}
+        </div>
+        {#            {% if question.answers %}#}
+        <span class="answers">
+                    <a class='btn btn-outline-primary btn-sm mt-2' href='#'>
+                        <b><i>Ответов({{ question.answers }})</i></b></a>
+                </span>
+        {#            {% endif %}#}
+        {#        {% endif %}#}
 
     </div>
 </div>

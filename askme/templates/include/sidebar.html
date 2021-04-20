@@ -8,16 +8,16 @@
                     <div class='row'> {% endif %}
             <div class='col-4'>
                 {% if forloop.counter0|is_newcol_zero %}
-                    <a class='badge yellow' href="{% url "tag" tag=tag %}">{{ tag }}</a>
+                    <a class='text-wrap badge yellow' href="{% url "tag" tag=tag %}">{{ tag }}</a>
                 {% elif forloop.counter0|is_newcol_one %}
-                    <a class='badge red' href="{% url "tag" tag=tag%}">{{ tag }}</a>
+                    <a class='text-wrap badge red' href="{% url "tag" tag=tag%}">{{ tag }}</a>
                 {% elif forloop.counter0|is_newcol_two %}
-                    <a class='badge blue' href="{% url "tag" tag=tag %}">{{ tag }}</a>
+                    <a class='text-wrap badge blue' href="{% url "tag" tag=tag %}">{{ tag }}</a>
                     </div>
                 {% endif %}
             </div>
             {% empty %}
-                <div class='col-4'><a class='badge blue' href="#"></a></div>
+                <div class='col-4'><a class='text-wrap badge blue' href="#"></a></div>
             {% endfor %}
             <div>
                 <h1>Активные участники</h1>

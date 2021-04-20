@@ -1,9 +1,9 @@
 {% extends "include/base.html" %}
 {% block title-browser %}
-    { one_tag.tag }}
+    {{ one_tag }}
 {% endblock title-browser %}
 {% block page-title %}
-    <b>Тег: </b><span>{{ one_tag.tag }}</span>
+    <b>Тег: </b><span>{{ one_tag }}</span>
 {% endblock page-title %}
 {% block content %}
     {% for question in page_object.object_list %}

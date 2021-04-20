@@ -1,0 +1,17 @@
+{% extends "include/base.html" %}
+{% load static %}
+{% block page-title %}
+    Ошибка 404 - Not found
+{% endblock page-title %}
+{% block after-header %}
+    <div class="row">
+        <div class="col-4">
+            <a href="{% url 'hot' %}" class="h4">{{ hot_page }}</a>
+        </div>
+        <div class="col-4">
+            <a href="{% url "hot" %}" class="h4">
+                {{ new_page }}
+            </a>
+        </div>
+    </div>
+{% endblock %}

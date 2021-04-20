@@ -4,13 +4,18 @@
         <img src="{% static "img/200.png" %}"/>
         <form class="form-like">
             <button class="btn btn-light btn-like"> +</button>
-            <span class="like">+200</span>
+            <span class="like">
+            {% if answer.likes == None %}
+                0
+            {% else %}
+                {{ answer.likes }}
+            {% endif %}
+            </span>
             <button class="btn btn-light btn-like"> -</button>
         </form>
     </div>
     <div class="col-10">
         <a href="{% url "one_question" question_id=answer.id %}">
-            <h2>{{ answer.title }}</h2>
         </a>
         <div>
             {{ answer.text }}

@@ -118,7 +118,7 @@ class Command(BaseCommand):
                     like = LikeAnswer.LIKE
                 else:
                     like = LikeAnswer.DISLIKE
-                check = LikeQuestion.objects.filter(question_id=question_id, profile_id=profile_id, mark=like).count()
+                check = LikeQuestion.objects.filter(question_id=question_id, profile_id=profile_id).count()
                 if not check:
                     LikeQuestion.objects.create(question_id=question_id, profile_id=profile_id, mark=like)
                     break
@@ -134,7 +134,7 @@ class Command(BaseCommand):
                 else:
                     like = LikeAnswer.DISLIKE
                     check = LikeAnswer.objects.\
-                    filter(answer_id=ans_id, profile_id=profile_id, mark=like).count()
+                    filter(answer_id=ans_id, profile_id=profile_id).count()
                 if not check:
                     LikeAnswer.objects.create(answer_id=ans_id, profile_id=profile_id, mark=like)
                     break
