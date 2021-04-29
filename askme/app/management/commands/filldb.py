@@ -32,18 +32,10 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
         self.faker = Faker(locales)
 
-    # def add_arguments(self, parser):
-    #     parser.add_argument(
-    #         '-users',
-    #         '--hello',
-    #         action='store_true',
-    #         default=False,
-    #         help='Вывод короткого сообщения'
-    #     )
 
     def handle(self, *args, **options):
-        # self.users_generate(COUNT_USERS)
-        # self.tags_generate(COUNT_TAGS)
+        self.users_generate(COUNT_USERS)
+        self.tags_generate(COUNT_TAGS)
         self.question_generate(COUNT_QUESTIONS)
         self.answers_generate(COUNT_ANSWERS)
         self.like_generate(LIKES)
@@ -81,13 +73,13 @@ class Command(BaseCommand):
         max_id = Profile.objects.order_by('-id')[0].id
         for i in range(count):
             cnt_tags_q = random.randint(1, 5)
-            text = self.faker['ru-RU'].paragraph(random.randint(100, 200))
+            text = self.faker['ru-RU'].paragraph(random.randint(30, 50))
             profile_id = random.randint(min_id, max_id)
-            q = Question.objects.create(text=text, title=titles[random.randint(0, len(titles))][:-1],
+            q = Question.objects.create(text=text, title=titles[random.randint(0, len(titles)-1)][:-1],
                                         profile_id=profile_id)
 
             for j in range(cnt_tags_q):
-                tag = Tag.objects.get(id=random.randint(tag_id, tag_id+cnt_tags))
+                tag = Tag.objects.get(id=random.randint(tag_id, tag_id+cnt_tags-1))
                 q.tags.add(tag)
         print("QUESTION_DONE")
 
@@ -98,7 +90,7 @@ class Command(BaseCommand):
         min_question_id = Question.objects.order_by('id')[0].id
         max_question_id = Question.objects.order_by('-id')[0].id
         for i in range(count):
-            text = self.faker['ru-RU'].paragraph(random.randint(100, 200))
+            text = self.faker['ru-RU'].paragraph(random.randint(10, 20))
             profile_id = random.randint(min_profile_id, max_profile_id)
             question = random.randint(min_question_id, max_question_id)
             ans = Answer.objects.create(text=text, question_id=question,
@@ -111,7 +103,7 @@ class Command(BaseCommand):
         max_profile_id = Profile.objects.order_by('-id')[0].id
         min_question_id = Question.objects.order_by('id')[0].id
         max_question_id = Question.objects.order_by('-id')[0].id
-        for i in range(count):
+        for i in range(round(count / 2)):
             while True:
                 like = random.randint(0, 1)
                 profile_id = random.randint(min_profile_id, max_profile_id)
@@ -126,7 +118,7 @@ class Command(BaseCommand):
                     break
         min_ans_id = Answer.objects.order_by('id')[0].id
         max_ans_id = Answer.objects.order_by('-id')[0].id
-        for i in range(count):
+        for i in range(round(count / 2)):
             while True:
                 like = random.randint(0, 1)
                 profile_id = random.randint(min_profile_id, max_profile_id)
@@ -135,7 +127,7 @@ class Command(BaseCommand):
                     like = LikeAnswer.LIKE
                 else:
                     like = LikeAnswer.DISLIKE
-                    check = LikeAnswer.objects. \
+                check = LikeAnswer.objects. \
                         filter(answer_id=ans_id, profile_id=profile_id).count()
                 if not check:
                     LikeAnswer.objects.create(answer_id=ans_id, profile_id=profile_id, mark=like)

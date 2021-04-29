@@ -10,12 +10,6 @@ class TagManager(models.Manager):
 
 
 class AnswerManager(models.Manager):
-    def hot(self):
-        res = self.annotate(likes=Sum('answer_like__mark')).order_by('-likes').exclude(likes=None)
-        if res.count() < 3:
-            res = self.annotate(likes=Sum('answer_like__mark')).order_by('-likes')
-        return res
-
     def answer_by_question(self, id):
         return self.annotate(likes=Sum('answer_like__mark')).order_by('-likes').filter(question_id=id)
 
@@ -24,23 +18,20 @@ class QuestionManager(models.Manager):
     def count_answers(self):
         return self.annotate(answers=Count('answer_related', distinct=True))
 
-    def count_likes(self):
-        res = self.count_answers().annotate(likes=Sum('question_like__mark')).order_by('-likes').exclude(likes=None)
-        if res.count() < 3:
-            res = self.count_answers().annotate(likes=Sum('question_like__mark')).order_by('-likes')
-        return res
+    def get_by_likes(self):
+        return self.count_answers().order_by('-rating')
 
     def get_by_id(self, id):
-        return self.count_likes().get(id=id)
+        return self.get(id=id)
 
     def by_tag(self, tag):
         return self.count_answers().filter(tags__name=tag)
 
     def new(self):
-        return self.count_likes().order_by('-pub_date')
+        return self.count_answers()
 
     def hot(self):
-        return self.count_likes()
+        return self.get_by_likes()
 
 
 class ProfileManager(models.Manager):

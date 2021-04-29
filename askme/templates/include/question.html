@@ -5,10 +5,10 @@
         <form class="form-like">
             <button class="btn btn-light btn-like"> +</button>
             <span class="like">
-                {% if question.likes == None %}
+                {% if question.rating == None %}
                     0
                 {% else %}
-                    {{ question.likes }}
+                    {{ question.rating }}
                 {% endif %}
             </span>
             <button class="btn btn-light btn-like"> -</button>
