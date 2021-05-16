@@ -19,7 +19,7 @@
                             </button>
                         </form>
                     </div>
-                    {% if key == "authorized" %}
+                    {% if request.user.is_authenticated %}
                         {% include "include/navbar_user.html" %}
 
                     {% else %}

@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
+from app.forms import LoginForm
+from django.contrib import auth
 from app.models import *
 import paginator
 
 users = Profile.objects.get_top_users(count=10)
+
 
 # Create your views here.
 def base_page(request):
@@ -73,9 +76,28 @@ def settings(request):
 
 
 def login_page(request):
-    return render(request, 'login.html', {'popular_tags': Tag.objects.top_tags(),
-                                          'top_users': users})
+    if request.method == "GET":
+        form = LoginForm()
+    else:
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            user = auth.authenticate(request, **form.cleaned_data)
+            if user is not None:
+                auth.login(request, user)
+                return redirect("new")
 
+
+    from pprint import pformat
+    print("\n\n", "-" * 100)
+    print(f"HERE: {pformat(form)}")
+    print("-" * 100, "\n\n")
+    return render(request, 'login.html', {'popular_tags': Tag.objects.top_tags(),
+                                          'top_users': users,
+                                          "form": form})
+
+def logout_view(request):
+    auth.logout(request)
+    return redirect(reverse("new"))
 
 def signup_page(request):
     return render(request, 'signup.html', {'popular_tags': Tag.objects.top_tags(),
