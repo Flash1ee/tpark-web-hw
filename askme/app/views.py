@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, reverse
+from django.contrib.auth.decorators import login_required
 from app.forms import LoginForm
 from django.contrib import auth
 from app.models import *
@@ -68,7 +69,7 @@ def tag_page(request, tag):
 
     return render(request, 'tag.html', content)
 
-
+@login_required(login_url = "login")
 def settings(request):
     return render(request, 'settings.html', {"key": "authorized",
                                              'popular_tags': Tag.objects.top_tags(),
@@ -94,16 +95,17 @@ def login_page(request):
     return render(request, 'login.html', {'popular_tags': Tag.objects.top_tags(),
                                           'top_users': users,
                                           "form": form})
-
+@login_required(login_url = "login")
 def logout_view(request):
     auth.logout(request)
     return redirect(reverse("new"))
+
 
 def signup_page(request):
     return render(request, 'signup.html', {'popular_tags': Tag.objects.top_tags(),
                                            'top_users': users})
 
-
+@login_required(login_url = "login")
 def ask_page(request):
     return render(request, 'ask.html',
                   {'popular_tags': Tag.objects.top_tags(),
