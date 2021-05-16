@@ -134,3 +134,4 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+REDIRECT_FIELD_NAME ="continue"
