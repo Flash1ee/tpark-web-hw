@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from askme.settings import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
-from app.forms import LoginForm, RegisterForm, SettingsForm
+from app.forms import LoginForm, RegisterForm, SettingsForm, QuestionForm
 from django.contrib import auth
 from app.models import *
 import paginator
@@ -149,6 +149,21 @@ def signup_page(request):
 
 @login_required(login_url="login", redirect_field_name=REDIRECT_FIELD_NAME)
 def ask_page(request):
+    if request.method == "GET":
+        form = QuestionForm()
+    else:
+        form = QuestionForm(data=request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.profile = Profile.objects.get(user=request.user)
+            question.save()
+            for tag in form.cleaned_data['tag_list'].split():
+                new = Tag.objects.get_or_create(name=tag)[0]
+                question.tags.add(new)
+            question.save()
+            return redirect("one_question", question_id = question.id)
+        form.save()
+
     return render(request, 'ask.html',
                   {'popular_tags': Tag.objects.top_tags(),
-                   'top_users': users, "key": "authorized"})
+                   'top_users': users, "key": "authorized", 'form': form})

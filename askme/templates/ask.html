@@ -1,27 +1,32 @@
 {% extends "include/base.html" %}
 {% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
 {% block title-browser %}
-Задать вопрос
+    Задать вопрос
 {% endblock title-browser %}
 {% block page-title %}
     Задать вопрос
 {% endblock %}
 {% block content %}
-    <form id="new-question" class="new-question">
-        <div class="form-label mb-3">
-            <label for="TitleLabel">Заголовок</label>
-            <input type="text" class="form-control" id="InputTitle" placeholder="Что такое корутины?">
-        </div>
-        <div class="form-label mb-3">
-            <label for="DescriptionQuestion">Формулировка вопроса</label>
-            <textarea class="form-control" id="InputDescriptionQuestion" placeholder="Опишите подробнее ваш вопрос"
-                      rows='5'></textarea>
-        </div>
-        <div class="form-label mb-3">
-            <label for="TagsQuestion">Теги</label>
-            <textarea class="form-control" id="InputTags" placeholder="Укажите один или несколько тегов"
-                      rows='1'></textarea>
-        </div>
+    <form id="new-question" class="new-question" action="/ask/" method="post">
+        {% bootstrap_form form %}
+        {% csrf_token %}
+
+        {#        <div class="form-label mb-3">#}
+        {#            <label for="TitleLabel">Заголовок</label>#}
+        {#            <input type="text" class="form-control" id="InputTitle" placeholder="Что такое корутины?">#}
+        {#        </div>#}
+        {#        <div class="form-label mb-3">#}
+        {#            <label for="DescriptionQuestion">Формулировка вопроса</label>#}
+        {#            <textarea class="form-control" id="InputDescriptionQuestion" placeholder="Опишите подробнее ваш вопрос"#}
+        {#                      rows='5'></textarea>#}
+        {#        </div>#}
+        {#        <div class="form-label mb-3">#}
+        {#            <label for="TagsQuestion">Теги</label>#}
+        {#            <textarea class="form-control" id="InputTags" placeholder="Укажите один или несколько тегов"#}
+        {#                      rows='1'></textarea>#}
+        {#        </div>#}
         <button type="submit" class="btn btn-primary mb-2">Задать</button>
     </form>
 {% endblock %}

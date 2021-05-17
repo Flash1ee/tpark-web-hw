@@ -32,8 +32,10 @@
             {% endfor %}
         </div>
         <span class="answers">
-                    <a class='btn btn-outline-primary btn-sm mt-2' href='{% url "one_question" question_id=question.id %}'>
-                        <b><i>Ответов({{ question.answers }})</i></b></a>
+                    <a class='btn btn-outline-primary btn-sm mt-2'
+                       href='{% url "one_question" question_id=question.id %}'>
+                        <b><i>Ответов( {% if question.answers %}{{ question.answers }} {% else %}
+                            {{ 0 }} {% endif %})</i></b></a>
                 </span>
     </div>
 </div>

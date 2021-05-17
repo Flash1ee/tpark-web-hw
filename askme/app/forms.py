@@ -1,5 +1,5 @@
 from django import forms
-from app.models import Profile
+from app.models import Profile, Question
 
 
 class LoginForm(forms.ModelForm):
@@ -38,3 +38,21 @@ class SettingsForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-group mb-3"}), label="email")
     first_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-group mb-3"}), label="Ник")
     avatar = forms.FileField(widget=forms.FileInput(attrs={"class": "form-group mb-3"}), label="Аватар", required=False)
+
+
+class QuestionForm(forms.ModelForm):
+    tag_list = forms.CharField(widget=forms.TextInput(attrs={"class": "form-group mb-3",
+                                                         "placeholder": "Укажите один или несколько тегов"}),
+                           label="Теги")
+
+    class Meta:
+        model = Question
+        fields = ("title", "text",)
+        labels = {
+            "title": "Заголовок",
+            "text": "Формулировка вопроса",
+        }
+        widgets = {
+            "title": forms.TextInput(attrs={"placeholder": "Формулировка вопроса"}),
+            "text": forms.Textarea(attrs={"placeholder": "Что такое корутины?"})
+        }
