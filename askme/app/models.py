@@ -41,7 +41,7 @@ class ProfileManager(models.Manager):
 
 # Create your models here.
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, related_name='profile_related')
     avatar = models.ImageField(upload_to="", default='static/img/200.png')
 
     objects = ProfileManager()

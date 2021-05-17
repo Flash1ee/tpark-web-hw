@@ -134,4 +134,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-REDIRECT_FIELD_NAME ="continue"
+REDIRECT_FIELD_NAME = "continue"
+# AUTH_USER_MODEL = "app.Profile"

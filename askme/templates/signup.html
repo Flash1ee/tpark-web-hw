@@ -1,4 +1,7 @@
 {% extends "include/base.html" %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+
 {% block title-browser %}
     Регистрация
 {% endblock title-browser %}
@@ -6,37 +9,10 @@
     Регистрация
 {% endblock page-title %}
 {% block content %}
-    <h3 class="error-signup"> Уже существует пользователь с данным логином </h3>
-    <form class="signup-size">
-        <div class='form-group mb-3'>
-            <label for="Login">Логин</label>
-            <input type="nick" class="form-control" id="Login" aria-describedby="LoginHelp"
-                   placeholder="Ваш логин" required>
-        </div>
-        <div class="form-group mb-3">
-            <label for="Email">Email</label>
-            <input type="email" class="form-control" id="Email" aria-describedby="emailHelp"
-                   placeholder="name@mail.com" required>
-            <small id="emailHelp" class="form-text text-muted">Используйте активный адрес</small>
-        </div>
-        <div class='form-group mb-3'>
-            <label for="username">Имя</label>
-            <input type="name" class="form-control" id="Username" aria-describedby="UsernameHelp"
-                   placeholder="Хомяк" required>
-        </div>
-        <div class="form-group mb-3">
-            <label for="InputPassword1">Пароль</label>
-            <input type="password" class="form-control" id="InputPassword1" placeholder="Пароль" required>
-        </div>
-        <div class="form-group mb-3">
-            <label for="exampleInputPassword1">Повторите пароль</label>
-            <input type="password" class="form-control" id="InputPassword2" placeholder="Повторите пароль"
-                   required>
-        </div>
-        <div class='form-group mb-3'>
-            <label for="LoadFile">Загрузите аватарку</label>
-            <input type="file" class="form-control fix-settings-padding" id="LoadFile">
-        </div>
+    {#    <h3 class="error-signup"> Уже существует пользователь с данным логином </h3>#}
+    <form class="signup-size" method="post" action="/signup/">
+        {% csrf_token %}
+        {% bootstrap_form form %}
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 {% endblock content %}
