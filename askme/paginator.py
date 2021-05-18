@@ -38,7 +38,8 @@ def paginate(objects_list, request, per_page=10) -> dict:
         'page_object': cur_page,
         'is_paginated': is_paginated,
         'prev_url': prev_url,
-        'next_url': next_url
+        'next_url': next_url,
+        "pages" : paginator.num_pages
     }
 
     return content

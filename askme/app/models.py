@@ -22,13 +22,13 @@ class QuestionManager(models.Manager):
         return self.count_answers().order_by('-rating')
 
     def get_by_id(self, id):
-        return self.get(id=id)
+        return self.count_answers().get(id=id)
 
     def by_tag(self, tag):
         return self.count_answers().filter(tags__name=tag)
 
     def new(self):
-        return self.count_answers()
+        return self.count_answers().order_by('-pub_date')
 
     def hot(self):
         return self.get_by_likes()

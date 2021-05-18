@@ -1,5 +1,5 @@
 from django import forms
-from app.models import Profile, Question
+from app.models import Profile, Question, Answer
 
 
 class LoginForm(forms.ModelForm):
@@ -42,8 +42,8 @@ class SettingsForm(forms.ModelForm):
 
 class QuestionForm(forms.ModelForm):
     tag_list = forms.CharField(widget=forms.TextInput(attrs={"class": "form-group mb-3",
-                                                         "placeholder": "Укажите один или несколько тегов"}),
-                           label="Теги")
+                                                             "placeholder": "Укажите один или несколько тегов"}),
+                               label="Теги")
 
     class Meta:
         model = Question
@@ -53,6 +53,16 @@ class QuestionForm(forms.ModelForm):
             "text": "Формулировка вопроса",
         }
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "Формулировка вопроса"}),
-            "text": forms.Textarea(attrs={"placeholder": "Что такое корутины?"})
+            "title": forms.TextInput(attrs={"class": "form-group mb-3", "placeholder": "Формулировка вопроса"}),
+            "text": forms.Textarea(attrs={"class": "form-group mb-3", "placeholder": "Что такое корутины?"})
         }
+
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ('text',)
+        widgets = {
+            "text": forms.Textarea(attrs={"class": "form-group mb-3", "placeholder": "Введите ваш ответ"})
+        }
+

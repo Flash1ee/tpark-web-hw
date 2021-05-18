@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from askme.settings import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
-from app.forms import LoginForm, RegisterForm, SettingsForm, QuestionForm
+from app.forms import LoginForm, RegisterForm, SettingsForm, QuestionForm, AnswerForm
 from django.contrib import auth
 from app.models import *
 import paginator
@@ -35,21 +35,36 @@ def hot_page(request):
 
 
 def question_page(request, question_id):
-    try:
-        question = Question.objects.get_by_id(question_id)
-        answers = Answer.objects.answer_by_question(question_id)
-    except Exception:
-        return render(request, 'not_found.html', {"hot_page": "Лучшие вопросы",
-                                                  "new_page": "Новые вопросы",
-                                                  "popular_tags": Tag.objects.top_tags(),
-                                                  'top_users': users
-                                                  })
-
+    if request.method == 'POST':
+        form = AnswerForm(data=request.POST)
+        if form.is_valid():
+            ans = form.save(commit=False)
+            profile = Profile.objects.get(user=request.user)
+            question = Question.objects.get(id=question_id)
+            ans.profile = profile
+            ans.question = question
+            ans.save()
+            # content = paginator.paginate(Answer.objects.answer_by_question(question_id), request, 3)
+            # next = f"/question/{question_id}?page={content['pages']}#{ans.id}"
+            # return redirect(next)
+            return redirect("one_question", question_id)
+    else:
+        try:
+            question = Question.objects.get_by_id(question_id)
+            answers = Answer.objects.answer_by_question(question_id)
+        except Exception:
+            return render(request, 'not_found.html', {"hot_page": "Лучшие вопросы",
+                                                      "new_page": "Новые вопросы",
+                                                      "popular_tags": Tag.objects.top_tags(),
+                                                      'top_users': users
+                                                      })
+    form = AnswerForm()
     content = paginator.paginate(answers, request, 3)
     content.update({'question': question,
                     'popular_tags': Tag.objects.top_tags(),
                     'answers': paginator.paginate(answers, request, 3),
-                    'top_users': users
+                    'top_users': users,
+                    "form": form
                     })
     return render(request, 'question.html', content)
 
@@ -161,7 +176,7 @@ def ask_page(request):
                 new = Tag.objects.get_or_create(name=tag)[0]
                 question.tags.add(new)
             question.save()
-            return redirect("one_question", question_id = question.id)
+            return redirect("one_question", question_id=question.id)
         form.save()
 
     return render(request, 'ask.html',

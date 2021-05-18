@@ -1,4 +1,6 @@
 {% extends "include/base.html" %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
 {% block title-browser %}
     {{ question.title }}
 {% endblock title-browser %}
@@ -13,12 +15,14 @@
     {% include "include/pagination.html" %}
 
     <div class='row form-ans top-border'>
-        <form id="new-answer" class="enter-answer">
-            <div class="mb-3">
-                            <textarea class="form-control form-control-lg" id="TextForm" placeholder="Введите ваш ответ"
-                                      rows="4"></textarea>
+        <form id="new-answer" class="enter-answer" action="/question/{{ question.id }}" method="post"">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+{#            <div class="mb-3">#}
+{#                            <textarea class="form-control form-control-lg" id="TextForm" placeholder="Введите ваш ответ"#}
+{#                                      rows="4"></textarea>#}
                 <button class="btn btn-outline-primary btn-answer" type="submit">Отправить</button>
-            </div>
+{#            </div>#}
         </form>
     </div>
 {% endblock content %}

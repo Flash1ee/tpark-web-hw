@@ -15,7 +15,7 @@
         </form>
     </div>
     <div class="col-10">
-        <a href="{% url "one_question" question_id=answer.id %}">
+        <a href="{% url "one_question" question_id=answer.id %}" id="{{ answer.id }}">
         </a>
         <div>
             {{ answer.text }}
