@@ -35,6 +35,7 @@ def hot_page(request):
 
 
 def question_page(request, question_id):
+    cache.set(REDIRECT_FIELD_NAME, request.path)
     if request.method == 'POST':
         form = AnswerForm(data=request.POST)
         if form.is_valid():
@@ -44,9 +45,10 @@ def question_page(request, question_id):
             ans.profile = profile
             ans.question = question
             ans.save()
-            # content = paginator.paginate(Answer.objects.answer_by_question(question_id), request, 3)
-            # next = f"/question/{question_id}?page={content['pages']}#{ans.id}"
-            # return redirect(next)
+            # answers = Answer.objects.answer_by_question(question_id)
+            content = paginator.paginate(Answer.objects.answer_by_question(question_id), request, 3)
+            next = f"/question/{question_id}?page={content['pages']}#{ans.id}"
+            # cache.set("ans_id", ans.id)
             return redirect("one_question", question_id)
     else:
         try:
@@ -56,7 +58,8 @@ def question_page(request, question_id):
             return render(request, 'not_found.html', {"hot_page": "Лучшие вопросы",
                                                       "new_page": "Новые вопросы",
                                                       "popular_tags": Tag.objects.top_tags(),
-                                                      'top_users': users
+                                                      'top_users': users,
+                                                      "form": form
                                                       })
     form = AnswerForm()
     content = paginator.paginate(answers, request, 3)
@@ -66,6 +69,11 @@ def question_page(request, question_id):
                     'top_users': users,
                     "form": form
                     })
+    # ans_id = cache.get("ans_id")
+    # if ans_id:
+    #     next = f"/question/{question_id}?page={content['pages']}#{ans_id}"
+    #     return render(request, next, content)
+    # else:
     return render(request, 'question.html', content)
 
 
@@ -106,7 +114,10 @@ def settings(request):
 
 
 def login_page(request):
-    nxt = request.GET.get(REDIRECT_FIELD_NAME, "new")
+    prev = cache.get(REDIRECT_FIELD_NAME)
+    nxt = request.GET.get(REDIRECT_FIELD_NAME, prev)
+    if not nxt:
+        nxt = 'new'
     if request.user.is_authenticated:
         return redirect(nxt)
 
@@ -121,6 +132,7 @@ def login_page(request):
                 auth.login(request, user)
                 next_url = cache.get(REDIRECT_FIELD_NAME)
                 cache.delete(REDIRECT_FIELD_NAME)
+
                 return redirect(next_url)
             else:
                 form.add_error(None, "Пользователь не найден")
@@ -136,7 +148,11 @@ def login_page(request):
 @login_required(login_url="login", redirect_field_name=REDIRECT_FIELD_NAME)
 def logout_view(request):
     auth.logout(request)
-    return redirect(reverse("new"))
+    prev = cache.get(REDIRECT_FIELD_NAME)
+    if not prev:
+        prev = "new"
+    cache.delete(REDIRECT_FIELD_NAME)
+    return redirect(prev)
 
 
 def signup_page(request):

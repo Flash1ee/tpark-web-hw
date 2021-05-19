@@ -11,7 +11,8 @@ class TagManager(models.Manager):
 
 class AnswerManager(models.Manager):
     def answer_by_question(self, id):
-        return self.annotate(likes=Sum('answer_like__mark')).order_by('-likes').filter(question_id=id)
+        # return self.annotate(likes=Sum('answer_like__mark')).order_by('-likes').filter(question_id=id)
+        return self.annotate(likes=Sum('answer_like__mark')).order_by('pub_date').filter(question_id=id)
 
 
 class QuestionManager(models.Manager):
