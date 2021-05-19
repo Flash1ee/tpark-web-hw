@@ -2,7 +2,7 @@
 <div class='col-1'>
     <ul class="navbar-nav navbar-img mb-2 mb-md-0">
         <li class="nav-item">
-            <img src="{% static "img/200.png" %}" class="profile-img" alt=""/>
+            <img src="{{ MEDIA_URL }}{{ request.user.profile_related.avatar.url }}" class="profile-img" alt=""/>
         </li>
     </ul>
 </div>

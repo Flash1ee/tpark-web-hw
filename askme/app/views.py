@@ -103,11 +103,14 @@ def settings(request):
                 "first_name": _profile.user.first_name, "avatar": _profile.avatar}
         form = SettingsForm(data)
     else:
-        form = SettingsForm(data=request.POST)
+        form = SettingsForm(data=request.POST, files=request.FILES, instance=request.user)
         if form.is_valid():
-            User.objects.filter(username=form.data['username']).update(email=form.data['email'],
-                                                                       first_name=form.data['first_name'])
-            Profile.objects.filter(user=request.user).update(avatar=form.data['avatar'])
+            form.save()
+            return redirect(reverse("settings"))
+            # User.objects.filter(username=form.cleaned_data['username']).update(email=form.cleaned_data['email'],
+            #                                                            first_name=form.cleaned_data['first_name'])
+            # Profile.objects.filter(user=request.user).update(avatar=form.cleaned_data['avatar'])
+
 
     return render(request, 'settings.html', {'popular_tags': Tag.objects.top_tags(),
                                              'top_users': users, "form": form})

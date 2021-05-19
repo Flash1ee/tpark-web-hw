@@ -15,23 +15,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 from app import views
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.base_page, name="new"),
+                  path('admin/', admin.site.urls),
+                  path('', views.base_page, name="new"),
 
-    path('login/', views.login_page, name="login"),
-    path('signup/', views.signup_page, name="signup"),
+                  path('login/', views.login_page, name="login"),
+                  path('signup/', views.signup_page, name="signup"),
 
-    path('ask/', views.ask_page, name="ask"),
-    path('hot/', views.hot_page, name="hot"),
+                  path('ask/', views.ask_page, name="ask"),
+                  path('hot/', views.hot_page, name="hot"),
 
-    path('tag/<str:tag>', views.tag_page, name="tag"),
-    path('settings/', views.settings, name="settings"),
-    path('question/<int:question_id>', views.question_page, name="one_question"),
-    path('logout', views.logout_view, name="logout")
+                  path('tag/<str:tag>', views.tag_page, name="tag"),
+                  path('settings/', views.settings, name="settings"),
+                  path('question/<int:question_id>', views.question_page, name="one_question"),
+                  path('logout', views.logout_view, name="logout")
 
-]
+              ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

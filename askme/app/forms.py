@@ -1,5 +1,5 @@
 from django import forms
-from app.models import Profile, Question, Answer
+from app.models import Profile, Question, Answer, User
 
 
 class LoginForm(forms.ModelForm):
@@ -29,15 +29,28 @@ class RegisterForm(forms.Form):
 
 
 class SettingsForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['username', 'email', 'first_name', 'avatar', ]
-
-    username = forms.CharField(widget=forms.TextInput(attrs={"class": "form-group mb-3", "readonly": "readonly"}),
-                               label="Логин")
-    email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-group mb-3"}), label="email")
-    first_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-group mb-3"}), label="Ник")
     avatar = forms.FileField(widget=forms.FileInput(attrs={"class": "form-group mb-3"}), label="Аватар", required=False)
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'avatar', ]
+        labels = {
+            "username": "Логин",
+            "first_name": "Ник",
+        }
+        widgets = {
+            "username": forms.TextInput(attrs={"class": "form-group mb-3", "readonly": "readonly"}),
+            "first_name": forms.TextInput(attrs={"class": "form-group mb-3"})
+        }
+        help_texts = {
+            'username': None,
+        }
+
+    def save(self, *args, **kwargs):
+        user = super().save(*args, *kwargs)
+        user.profile_related.avatar = self.cleaned_data['avatar']
+        user.profile_related.save()
+        return user
+
 
 
 class QuestionForm(forms.ModelForm):
