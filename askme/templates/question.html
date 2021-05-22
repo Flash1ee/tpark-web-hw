@@ -15,7 +15,7 @@
     {% include "include/pagination.html" %}
 
     <div class='row form-ans top-border'>
-        <form id="new-answer" class="enter-answer" action="/question/{{ question.id }}" method="post"">
+        <form id="new-answer" class="enter-answer" action="/question/{{ question.id }}" method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
 {#            <div class="mb-3">#}

@@ -59,21 +59,17 @@ def question_page(request, question_id):
                                                       "new_page": "Новые вопросы",
                                                       "popular_tags": Tag.objects.top_tags(),
                                                       'top_users': users,
-                                                      "form": form
                                                       })
-    form = AnswerForm()
-    content = paginator.paginate(answers, request, 3)
-    content.update({'question': question,
-                    'popular_tags': Tag.objects.top_tags(),
-                    'answers': paginator.paginate(answers, request, 3),
-                    'top_users': users,
-                    "form": form
-                    })
-    # ans_id = cache.get("ans_id")
-    # if ans_id:
-    #     next = f"/question/{question_id}?page={content['pages']}#{ans_id}"
-    #     return render(request, next, content)
-    # else:
+        else:
+            form = AnswerForm()
+            content = paginator.paginate(answers, request, 3)
+            content.update({'question': question,
+                            "one_question:": "yes",
+                            'popular_tags': Tag.objects.top_tags(),
+                            'answers': paginator.paginate(answers, request, 3),
+                            'top_users': users,
+                            "form": form
+                            })
     return render(request, 'question.html', content)
 
 
