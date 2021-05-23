@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Sum
 from django.utils import timezone
 
+LIKE = '1'
+DISLIKE = '-1'
 
 class TagManager(models.Manager):
     def top_tags(self, count=10):
@@ -103,9 +105,6 @@ class Answer(models.Model):
 
 
 class LikeQuestion(models.Model):
-    LIKE = '1'
-    DISLIKE = '-1'
-
     MARK = [
         (LIKE, 'Like'),
         (DISLIKE, "Dislike"),
@@ -122,9 +121,6 @@ class LikeQuestion(models.Model):
 
 
 class LikeAnswer(models.Model):
-    LIKE = '1'
-    DISLIKE = '-1'
-
     MARK = [
         (LIKE, 'Like'),
         (DISLIKE, "Dislike"),

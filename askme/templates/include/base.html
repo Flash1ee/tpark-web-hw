@@ -55,6 +55,10 @@
 {% include "include/footer.html" %}
 
 <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "js/jquery.js" %}"></script>
+<script src="{% static "js/csrf.js" %}"></script>
+
+{% block jscode %}{% endblock jscode %}
 </body>
 
 </html>
