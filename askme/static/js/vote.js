@@ -16,6 +16,8 @@ $('.js-vote-like').click(function (ev) {
 
         var bef = parseInt(likes, 10);
         bef = bef + 1;
+        if (bef === 0)
+            bef = 1;
         $('.like_'+data.qid).contents().last()[0].textContent=bef.toString(10);
 
     });
@@ -40,6 +42,8 @@ $('.js-vote-dislike').click(function (ev) {
 
         var bef = parseInt(likes, 10);
         bef = bef - 1;
+        if (bef === 0)
+            bef -= 1;
         $('.like_'+data.qid).contents().last()[0].textContent=bef.toString(10);
 
     });

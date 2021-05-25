@@ -1,8 +1,12 @@
+from django.db.models import F
 from django.shortcuts import render, redirect, reverse
 from askme.settings import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+
 from django.core.cache import cache
 from app.forms import LoginForm, RegisterForm, SettingsForm, QuestionForm, AnswerForm
+from django.http import HttpResponse, JsonResponse
 from django.contrib import auth
 from app.models import *
 import paginator
@@ -12,6 +16,8 @@ users = Profile.objects.get_top_users(count=10)
 
 # Create your views here.
 def base_page(request):
+    if request.is_ajax():
+        return like(request)
     questions = Question.objects.new()
     content = paginator.paginate(questions, request, 10)
     content.update({"category": "Новые вопросы",
@@ -107,7 +113,6 @@ def settings(request):
             #                                                            first_name=form.cleaned_data['first_name'])
             # Profile.objects.filter(user=request.user).update(avatar=form.cleaned_data['avatar'])
 
-
     return render(request, 'settings.html', {'popular_tags': Tag.objects.top_tags(),
                                              'top_users': users, "form": form})
 
@@ -197,3 +202,43 @@ def ask_page(request):
     return render(request, 'ask.html',
                   {'popular_tags': Tag.objects.top_tags(),
                    'top_users': users, "key": "authorized", 'form': form})
+
+
+@require_POST
+@login_required()
+def like(request):
+    data = request.POST
+    qid = data['qid']
+    action = data['action']
+    q = Question.objects.get(id=qid)
+    inc = LIKE
+    if action == 'dislike':
+        inc = DISLIKE
+    inc = int(inc)
+    q_likes = q.question_like.all()
+    if (len(q_likes) and q.question_like.all()[0].mark == int(inc)):
+        return JsonResponse(data, status=400)
+    if (len(q_likes)):
+        if q_likes[0].mark != inc:
+            flag = True
+            q_likes[0].mark = inc
+            q_likes[0].save()
+    else:
+        l = LikeQuestion.objects.create(mark=inc, profile=request.user.profile_related, question=q)
+        flag = True
+    if flag:
+        if q.rating in [1, -1]:
+            inc *= 2
+        q.rating = F('rating') + inc
+    q.save()
+    return JsonResponse(data)
+
+
+@require_POST
+@login_required()
+def dislike(request):
+    # q = Question.objects.get(id=1)
+    # q.rating = F('rating') + 1
+    # q.save()
+
+    return JsonResponse({})
