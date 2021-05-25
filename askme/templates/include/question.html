@@ -2,10 +2,10 @@
     <div class="col-3">
         <img src="{{ MEDIA_URL }}question/2.jpeg">
         <form class="form-like">
-            <button class="btn btn-light btn-like js-vote-like" data-action="like" data-qid={{ question.id }}> +</button>
+            <button class="btn btn-light btn-like js-vote-like" data-type="question" data-action="like" data-qid={{ question.id }}> +</button>
             <span class="like_{{ question.id }}" data-action="like_{{ question.id }}">{% if question.rating == None %}0{% else %}{{ question.rating }}{% endif %}
             </span>
-            <button class="btn btn-light btn-like js-vote-dislike" data-action="dislike" data-qid={{ question.id }}> -</button>
+            <button class="btn btn-light btn-like js-vote-dislike" data-type="question" data-action="dislike" data-qid={{ question.id }}> -</button>
         </form>
     </div>
     <div class="col-9">

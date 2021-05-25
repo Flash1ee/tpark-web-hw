@@ -1,5 +1,6 @@
 {% extends "include/base.html" %}
 {% load bootstrap4 %}
+{% load static %}
 {% bootstrap_css %}
 {% block title-browser %}
     {{ question.title }}
@@ -26,4 +27,9 @@
         </form>
     </div>
 {% endblock content %}
+{% block jscode %}
+    <script src="{% static "js/vote.js" %}"></script>
+    <script src="{% static "js/answer.js" %}"></script>
+{% endblock jscode %}
+
 

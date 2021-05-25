@@ -3,15 +3,10 @@
     <div class='col-2'>
         <img src="{{ MEDIA_URL }}question/1.jpeg">
         <form class="form-like">
-            <button class="btn btn-light btn-like"> +</button>
-            <span class="like">
-            {% if answer.likes == None %}
-                0
-            {% else %}
-                {{ answer.likes }}
-            {% endif %}
+            <button class="btn btn-light btn-like js-vote-like" data-type="answer" data-action="like" data-aid={{ answer.id }}> +</button>
+            <span class="like_{{ answer.id }}" data-action="like_{{ answer.id }}">{% if not answer.likes %}0{% else %}{{ answer.likes }}{% endif %}
             </span>
-            <button class="btn btn-light btn-like"> -</button>
+            <button class="btn btn-light btn-like js-vote-dislike" data-type="answer" data-action="dislike" data-aid={{ answer.id }}> -</button>
         </form>
     </div>
     <div class="col-10">
@@ -21,10 +16,20 @@
             {{ answer.text }}
         </div>
         <div class="form-check">
-            <input class="form-check-input correct-check" type="checkbox" value="11" id="CheckCorrect">
-            <label class="form-check-label correct-style" for="CheckCorrect">
-                Выбрать
-            </label>
+            {% if request.user.profile_related == question.profile %}
+                <input id="answer-correct-{{ answer.id }}" class="form-check-input" type="checkbox" value=""
+                       data-qid="{{ question.id }}" data-aid="{{ answer.id }}"
+                        {% if answer.correct %} checked="checked" {% endif %}>
+                <label id="answer-correct-label-aid-{{ answer.id }}" class="form-check-label"
+                       for="answer-correct-{{ answer.id }}">
+                    correct!
+                </label>
+                </input>
+            {% else %}
+                {% if answer.correct %}
+                    <p>This answer was marked by question author as correct</p>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>

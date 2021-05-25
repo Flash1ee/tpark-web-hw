@@ -11,6 +11,8 @@ from django.contrib import auth
 from app.models import *
 import paginator
 
+from pprint import pformat
+
 users = Profile.objects.get_top_users(count=10)
 
 
@@ -208,37 +210,66 @@ def ask_page(request):
 @login_required()
 def like(request):
     data = request.POST
-    qid = data['qid']
-    action = data['action']
-    q = Question.objects.get(id=qid)
-    inc = LIKE
-    if action == 'dislike':
-        inc = DISLIKE
-    inc = int(inc)
-    q_likes = q.question_like.all()
-    if (len(q_likes) and q.question_like.all()[0].mark == int(inc)):
-        return JsonResponse(data, status=400)
-    if (len(q_likes)):
-        if q_likes[0].mark != inc:
+
+    if data['type'] == 'answer':
+        aid = data['aid']
+        action = data['action']
+        a = Answer.objects.get(id=aid)
+        inc = LIKE
+        if action == 'dislike':
+            inc = DISLIKE
+        inc = int(inc)
+        a_likes = a.answer_like.filter(profile_id=request.user.profile_related.id).all()
+
+        if (len(a_likes) and a_likes[0].mark == int(inc)):
+            return JsonResponse(data, status=400)
+        if (len(a_likes)):
+            if a_likes[0].mark != inc:
+                flag = True
+                a_likes[0].mark = inc
+                a_likes[0].save()
+        else:
+            l = LikeAnswer.objects.create(mark=inc, profile=request.user.profile_related, answer=a)
             flag = True
-            q_likes[0].mark = inc
-            q_likes[0].save()
+        return JsonResponse(data, status=200)
     else:
-        l = LikeQuestion.objects.create(mark=inc, profile=request.user.profile_related, question=q)
-        flag = True
-    if flag:
-        if q.rating in [1, -1]:
-            inc *= 2
-        q.rating = F('rating') + inc
-    q.save()
-    return JsonResponse(data)
+
+        qid = data['qid']
+        action = data['action']
+        q = Question.objects.get(id=qid)
+        inc = LIKE
+        if action == 'dislike':
+            inc = DISLIKE
+        inc = int(inc)
+        q_likes = q.question_like.filter(profile_id=request.user.profile_related.id).all()
+        if (len(q_likes) and q.question_like.all()[0].mark == int(inc)):
+            data.update({"mark": q.question_like.all()[0].mark})
+            return JsonResponse(data, status=400)
+        if (len(q_likes)):
+            if q_likes[0].mark != inc:
+                flag = True
+                q_likes[0].mark = inc
+                q_likes[0].save()
+        else:
+            l = LikeQuestion.objects.create(mark=inc, profile=request.user.profile_related, question=q)
+            flag = True
+        if flag:
+            if q.rating in [1, -1]:
+                inc *= 2
+            q.rating = F('rating') + inc
+        q.save()
+        return JsonResponse(data)
 
 
 @require_POST
 @login_required()
-def dislike(request):
-    # q = Question.objects.get(id=1)
-    # q.rating = F('rating') + 1
-    # q.save()
+def choice_answer(request):
+    data = request.POST
+    print(f'HERE: {pformat(data)}')
+    if Question.objects.get(id=data['qid']).profile == request.user.profile_related:
+        answer = Answer.objects.get(pk=data['aid'])
+        answer.correct = not answer.correct
+        answer.save()
+        print('answer correct status changed')
 
     return JsonResponse({})
