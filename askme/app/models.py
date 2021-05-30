@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum
 from django.utils import timezone
+from app.upload_to import path_and_rename
 
 LIKE = '1'
 DISLIKE = '-1'
@@ -45,7 +46,7 @@ class ProfileManager(models.Manager):
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, related_name='profile_related')
-    avatar = models.ImageField(upload_to="avatar/%Y/%m/%d", default='avatar/200.png')
+    avatar = models.ImageField(upload_to=path_and_rename, default='avatar/200.png')
 
     objects = ProfileManager()
 

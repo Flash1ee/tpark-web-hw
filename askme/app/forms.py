@@ -1,5 +1,6 @@
 from django import forms
 from app.models import Profile, Question, Answer, User
+from askme.settings import MEDIA_URL
 
 
 class LoginForm(forms.ModelForm):
@@ -29,7 +30,7 @@ class RegisterForm(forms.Form):
 
 
 class SettingsForm(forms.ModelForm):
-    avatar = forms.FileField(widget=forms.FileInput(attrs={"class": "form-group mb-3"}), label="Аватар", required=False)
+    avatar = forms.FileField(label="Аватар", required=False, widget=forms.FileInput(attrs={"class": "form-group mb-3"}))
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'avatar', ]
@@ -47,10 +48,10 @@ class SettingsForm(forms.ModelForm):
 
     def save(self, *args, **kwargs):
         user = super().save(*args, *kwargs)
-        user.profile_related.avatar = self.cleaned_data['avatar']
-        user.profile_related.save()
+        if (self.cleaned_data['avatar']):
+            user.profile_related.avatar = self.cleaned_data['avatar']
+            user.profile_related.save()
         return user
-
 
 
 class QuestionForm(forms.ModelForm):
@@ -78,4 +79,3 @@ class AnswerForm(forms.ModelForm):
         widgets = {
             "text": forms.Textarea(attrs={"class": "form-group mb-3", "placeholder": "Введите ваш ответ"})
         }
-

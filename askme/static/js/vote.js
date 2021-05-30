@@ -80,6 +80,4 @@ $('.js-vote-dislike').click(function (ev) {
         $('.like_' + id).contents().last()[0].textContent = bef.toString(10);
 
     });
-
-    // console.log("Click: " + action + " " + qid);
 });

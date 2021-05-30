@@ -103,17 +103,14 @@ def tag_page(request, tag):
 def settings(request):
     if request.method == "GET":
         _profile = Profile.objects.get(user=request.user)
-        data = {"username": _profile.user.username, "email": _profile.user.email,
-                "first_name": _profile.user.first_name, "avatar": _profile.avatar}
-        form = SettingsForm(data)
+        _data = {"username": _profile.user.username, "email": _profile.user.email,
+                 "first_name": _profile.user.first_name}
+        form = SettingsForm(initial=_data)
     else:
         form = SettingsForm(data=request.POST, files=request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect(reverse("settings"))
-            # User.objects.filter(username=form.cleaned_data['username']).update(email=form.cleaned_data['email'],
-            #                                                            first_name=form.cleaned_data['first_name'])
-            # Profile.objects.filter(user=request.user).update(avatar=form.cleaned_data['avatar'])
 
     return render(request, 'settings.html', {'popular_tags': Tag.objects.top_tags(),
                                              'top_users': users, "form": form})
@@ -266,10 +263,15 @@ def like(request):
 def choice_answer(request):
     data = request.POST
     print(f'HERE: {pformat(data)}')
-    if Question.objects.get(id=data['qid']).profile == request.user.profile_related:
+    q = Question.objects.get(id=data['qid'])
+    if q.profile == request.user.profile_related:
+        answers = q.answer_related.all()
+        for ans in answers:
+            if ans.correct and ans.id != int(data['aid']):
+                return JsonResponse({}, status=400)
         answer = Answer.objects.get(pk=data['aid'])
         answer.correct = not answer.correct
         answer.save()
         print('answer correct status changed')
 
-    return JsonResponse({})
+        return JsonResponse({})
