@@ -144,6 +144,9 @@ STATIC_ROOT = BASE_DIR / "static"
 
 MEDIA_ROOT = BASE_DIR / "media/"
 MEDIA_URL = '/media/'
+
+DEFAULT_AVATAR = "avatar/200.png"
+
 # if run locally
 # if DEBUG:
 #     STATICFILES_DIRS = [

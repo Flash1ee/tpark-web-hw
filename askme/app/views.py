@@ -1,12 +1,12 @@
 from django.db.models import F
 from django.shortcuts import render, redirect, reverse
-from askme.settings import REDIRECT_FIELD_NAME
+from askme.settings import REDIRECT_FIELD_NAME, DEFAULT_AVATAR
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
 from django.core.cache import cache
 from app.forms import LoginForm, RegisterForm, SettingsForm, QuestionForm, AnswerForm
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib import auth
 from app.models import *
 import paginator
@@ -45,6 +45,9 @@ def hot_page(request):
 def question_page(request, question_id):
     cache.set(REDIRECT_FIELD_NAME, request.path)
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            next = f"/question/{question_id}"
+            return redirect("login")
         form = AnswerForm(data=request.POST)
         if form.is_valid():
             ans = form.save(commit=False)
@@ -169,6 +172,8 @@ def signup_page(request):
             except User.DoesNotExist:
                 form_data = form.cleaned_data.pop("password_repeat")
                 form_avatar = form.cleaned_data.pop("avatar")
+                if not form_avatar:
+                    form_avatar = DEFAULT_AVATAR
                 user = User.objects.create_user(**form.cleaned_data)
                 user.save()
                 Profile.objects.create(user=user, avatar=form_avatar)
@@ -203,11 +208,15 @@ def ask_page(request):
                    'top_users': users, "key": "authorized", 'form': form})
 
 
+# @todo убрать ошибку 500 в ответе на повторный лайк на главной странице
 @require_POST
-@login_required()
 def like(request):
     data = request.POST
-
+    if not request.user.is_authenticated:
+        data._mutable = True
+        data['redirect'] = '/login'
+        cache.set(REDIRECT_FIELD_NAME, data['url'])
+        return JsonResponse(data)
     if data['type'] == 'answer':
         aid = data['aid']
         action = data['action']
@@ -238,9 +247,11 @@ def like(request):
         if action == 'dislike':
             inc = DISLIKE
         inc = int(inc)
+        flag = False
         q_likes = q.question_like.filter(profile_id=request.user.profile_related.id).all()
-        if (len(q_likes) and q.question_like.all()[0].mark == int(inc)):
-            data.update({"mark": q.question_like.all()[0].mark})
+        if (len(q_likes) and q_likes[0].mark == int(inc)):
+            data._mutable = True
+            data["mark"] = q.question_like.all()[0].mark
             return JsonResponse(data, status=400)
         if (len(q_likes)):
             if q_likes[0].mark != inc:
@@ -254,7 +265,7 @@ def like(request):
             if q.rating in [1, -1]:
                 inc *= 2
             q.rating = F('rating') + inc
-        q.save()
+            q.save()
         return JsonResponse(data)
 
 
