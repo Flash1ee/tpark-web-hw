@@ -138,7 +138,7 @@ def login_page(request):
                 auth.login(request, user)
                 next_url = cache.get(REDIRECT_FIELD_NAME)
                 cache.delete(REDIRECT_FIELD_NAME)
-
+                if not next_url: next_url = "new"
                 return redirect(next_url)
             else:
                 form.add_error(None, "Пользователь не найден")
